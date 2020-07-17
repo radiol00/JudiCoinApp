@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:judicoinapp/services/DatabaseService.dart';
 
 class AuthService {
   FirebaseAuth _auth = FirebaseAuth.instance;

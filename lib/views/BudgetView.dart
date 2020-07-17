@@ -6,6 +6,8 @@ import 'package:judicoinapp/models/BudgetModel.dart';
 import 'package:judicoinapp/views/AddChargeView.dart';
 import 'package:judicoinapp/views/BudgetSummary.dart';
 import 'package:judicoinapp/views/IncreaseBudgetView.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 
 class BudgetView extends StatefulWidget {
   final BudgetModel budget;
@@ -19,7 +21,6 @@ class BudgetView extends StatefulWidget {
 class _BudgetViewState extends State<BudgetView> {
   bool showBudgetChargeSection = false;
   bool showIncreaseBudgetSection = false;
-  double charge = 0.0;
   bool devourTaps = false;
   int currentPage = 0;
 
@@ -55,6 +56,13 @@ class _BudgetViewState extends State<BudgetView> {
 
   @override
   Widget build(BuildContext context) {
+    QuerySnapshot charges = Provider.of<QuerySnapshot>(context);
+    if (charges != null){
+      setState(() {
+
+      });
+    }
+
     return IgnorePointer(
       ignoring: devourTaps,
       child: Scaffold(
@@ -227,7 +235,10 @@ class _BudgetViewState extends State<BudgetView> {
                               ],
                             )
                           ]),
-                    BudgetSummary(budget: widget.budget)
+                    BudgetSummary(
+                      uid: widget.uid,
+                      budget: widget.budget,
+                    )
                   ]),
             )
           ],

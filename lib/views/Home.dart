@@ -15,6 +15,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   AuthService _auth = AuthService();
+
   @override
   Widget build(BuildContext context) {
     FirebaseUser user = Provider.of<FirebaseUser>(context);
@@ -24,10 +25,13 @@ class _HomeState extends State<Home> {
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-              dynamic result = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddBudgetView(),));
-              if (result != null){
-                DatabaseService(uid: user.uid).addNewBudget(result['name'], result['budget']);
-              }
+            dynamic result = await Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => AddBudgetView(),
+            ));
+            if (result != null) {
+              DatabaseService(uid: user.uid)
+                  .addNewBudget(result['name'], result['budget']);
+            }
           },
           elevation: 2.0,
           child: Icon(

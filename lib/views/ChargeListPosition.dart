@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:judicoinapp/models/ChargeModel.dart';
 import 'package:judicoinapp/helpers/JudiCoinDateFormatter.dart';
+import 'package:judicoinapp/services/DatabaseService.dart';
+import 'package:judicoinapp/models/BudgetModel.dart';
 
 class ChargeListPosition extends StatefulWidget {
   final String category;
@@ -9,14 +11,18 @@ class ChargeListPosition extends StatefulWidget {
   final double charge;
   final Function scrollToMe;
   final bool amILast;
+  final String uid;
+  final BudgetModel budget;
 
   ChargeListPosition({
+    @required this.uid,
     @required this.category,
     @required this.color,
     @required this.charge,
     @required this.chargeGroup,
     @required this.scrollToMe,
     @required this.amILast,
+    @required this.budget,
   });
 
   @override
@@ -83,30 +89,58 @@ class _ChargeListPositionState extends State<ChargeListPosition> {
           },
           curve: Curves.easeInOut,
           height: unRolled ? 50.0 * widget.chargeGroup.length : 0,
-          duration: widget.amILast ? Duration(milliseconds: 20) : Duration(milliseconds: 200),
+          duration: widget.amILast
+              ? Duration(milliseconds: 20)
+              : Duration(milliseconds: 200),
           child: visibleContent
               ? Column(
                   children: widget.chargeGroup
-                      .map((charge) => Container(
-                            decoration: BoxDecoration(
-                              color: widget.color,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(25.0)),
-                            ),
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 40.0, vertical: 5.0),
-                            padding: EdgeInsets.all(10.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text('${formatDateTime(charge.date.toDate().add(Duration(hours: 2)))}',
-                                    style: TextStyle(color: Colors.white)),
-                                Text(
-                                  '${charge.charge.toStringAsFixed(2)} PLN',
-                                  style: TextStyle(color: Colors.white),
-                                )
-                              ],
-                            ),
+                      .map((charge) => Stack(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(vertical: 10.0),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.delete,
+                                  ),
+                                ),
+                              ),
+                              Dismissible(
+                                dismissThresholds: {
+                                  DismissDirection.startToEnd: 0.5
+                                },
+                                direction: DismissDirection.startToEnd,
+                                key: Key(charge.toString()),
+                                onDismissed: (direction) async {
+                                  await DatabaseService(uid: widget.uid).deleteChargeOfBudget(widget.budget.documentID, charge.chargeID, charge.charge);
+                                  widget.budget.state += charge.charge;
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: widget.color,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(25.0)),
+                                  ),
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 75.0, vertical: 5.0),
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(
+                                          '${formatDateTime(charge.date.toDate().add(Duration(hours: 2)))}',
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                      Text(
+                                        '${charge.charge.toStringAsFixed(2)} PLN',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ))
                       .toList(),
                 )

@@ -3,6 +3,8 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:judicoinapp/helpers/JudiCoinPalette.dart';
 import 'package:judicoinapp/models/BudgetModel.dart';
 import 'package:judicoinapp/services/DatabaseService.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 
 class AddChargeView extends StatefulWidget {
   final BudgetModel budget;
@@ -66,6 +68,8 @@ class _AddChargeViewState extends State<AddChargeView>
 
   @override
   Widget build(BuildContext context) {
+    QuerySnapshot charges = Provider.of<QuerySnapshot>(context);
+
     return Column(
       children: <Widget>[
         Padding(

@@ -4,6 +4,7 @@ class ChargeModel {
   String category;
   double charge;
   Timestamp date;
+  String chargeID;
 
   @override
   String toString(){
@@ -14,6 +15,7 @@ class ChargeModel {
     category = map['category'];
     charge = map['value'];
     date = map['date'];
+    chargeID = map['id'];
   }
 
   ChargeModel.fromModel(ChargeModel cm){

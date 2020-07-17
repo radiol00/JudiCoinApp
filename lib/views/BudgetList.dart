@@ -59,7 +59,8 @@ class _BudgetListState extends State<BudgetList> {
     return ListView.builder(
       itemCount: budgets.length,
       itemBuilder: (context, i) {
-        BudgetModel budget = BudgetModel({...budgets[i].data, 'documentID': budgets[i].documentID});
+        BudgetModel budget = BudgetModel(
+            {...budgets[i].data, 'documentID': budgets[i].documentID});
         return Container(
           padding: EdgeInsets.only(top: 10.0),
           child: Dismissible(
@@ -102,7 +103,13 @@ class _BudgetListState extends State<BudgetList> {
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => StreamProvider.value(
-                    value: DatabaseService(uid: widget.uid).userCollection.document(widget.uid).collection('budgets').document(budgets[i].documentID).collection('charges').snapshots(),
+                    value: DatabaseService(uid: widget.uid)
+                        .userCollection
+                        .document(widget.uid)
+                        .collection('budgets')
+                        .document(budgets[i].documentID)
+                        .collection('charges')
+                        .snapshots(),
                     child: BudgetView(
                       budget: budget,
                       uid: widget.uid,

@@ -9,13 +9,14 @@ import 'package:collection/collection.dart';
 import 'package:pie_chart/pie_chart.dart';
 
 class BudgetSummary extends StatefulWidget {
+  final String uid;
+
   const BudgetSummary({
+    @required this.uid,
     this.budget,
-    this.chargesList,
   });
 
   final BudgetModel budget;
-  final List<ChargeModel> chargesList;
 
   @override
   _BudgetSummaryState createState() => _BudgetSummaryState();
@@ -50,7 +51,9 @@ class _BudgetSummaryState extends State<BudgetSummary> {
     List<ChargeModel> chargesList = List<ChargeModel>();
     double chargeSum = 0.0;
     if (charges != null) {
-      chargeModels = charges.documents.map((e) => ChargeModel(e.data)).toList();
+      chargeModels = charges.documents
+          .map((e) => ChargeModel({...e.data, 'id': e.documentID}))
+          .toList();
       groupedCharges = groupBy(chargeModels, (obj) => obj.category);
       groupedCharges.forEach((key, value) {
         chargesList.add(value.reduce((value, element) {
@@ -146,6 +149,8 @@ class _BudgetSummaryState extends State<BudgetSummary> {
             itemCount: chargesList.length,
             itemBuilder: (context, i) {
               return ChargeListPosition(
+                budget: widget.budget,
+                uid: widget.uid,
                 color: pieChartColors[i],
                 category: chargesList[i].category,
                 charge: chargesList[i].charge,
