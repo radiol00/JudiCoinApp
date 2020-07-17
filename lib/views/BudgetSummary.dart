@@ -77,6 +77,7 @@ class _BudgetSummaryState extends State<BudgetSummary> {
         key: (e) => e.category, value: (e) => e.charge);
 
     final chargesPieChart = PieChart(
+        chartValueStyle: defaultChartValueStyle.copyWith(fontSize: 15.0),
         chartRadius: 150.0,
         showLegends: false,
         colorList: pieChartColors,
@@ -87,39 +88,55 @@ class _BudgetSummaryState extends State<BudgetSummary> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 5.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text('Data utworzenia'),
               Text(
                   '${formatDateTime(widget.budget.creationDate.toDate().add(Duration(hours: 2)))}',
                   style: TextStyle(fontSize: 18.0)),
               SizedBox(
                 height: 10.0,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Text('Kwota początkowa'),
-                      Text(
-                          '${widget.budget.startingState.toStringAsFixed(2)} PLN',
-                          style: TextStyle(fontSize: 21.0)),
-                    ],
-                  ),
-                  Column(
-                    children: <Widget>[
-                      Text('Wydano'),
-                      Text(
-                          '${chargeSum.toStringAsFixed(2)} PLN',
-                          style: TextStyle(fontSize: 21.0)),
-                    ],
-                  )
-                ],
+              Text('Kwota początkowa'),
+              Text(
+                  '${widget.budget.startingState.toStringAsFixed(2)}' +
+                      (widget.budget.increasedBy != 0.0
+                          ? ' + ${widget.budget.increasedBy.toStringAsFixed(2)}'
+                          : '') +
+                      ' PLN',
+                  style: TextStyle(fontSize: 21.0)),
+              SizedBox(
+                height: 10.0,
               ),
-              ...(chargesList.length > 0 ? [chargesPieChart] : [])
+              Text('Wydano'),
+              Text('${chargeSum.toStringAsFixed(2)} PLN',
+                  style: TextStyle(fontSize: 21.0)),
+              ...(chargesList.length > 0
+                  ? [chargesPieChart]
+                  : [
+                      Container(
+                        height: 345.0,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Center(
+                              child: Text('Brak obciążeń!'),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 70.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text('Obciąż ten budżet'),
+                            Icon(Icons.arrow_forward),
+                          ],
+                        ),
+                      )
+                    ])
             ],
           ),
         ),

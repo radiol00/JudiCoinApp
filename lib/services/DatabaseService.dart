@@ -13,7 +13,8 @@ class DatabaseService{
       'currentState': budget,
       'budget': budget,
       'name': name,
-      'creationDate': DateTime.now()
+      'creationDate': DateTime.now(),
+      'increasedBy': 0.0,
     });
   }
 
@@ -33,17 +34,25 @@ class DatabaseService{
   }
 
   Future deleteBudget(String budgetId) async{
-    await Firestore.instance.runTransaction((transaction) async {
+
+    await userCollection.document(uid).collection('budgets').document(budgetId).collection('charges').getDocuments().then((value) {
+      for (DocumentSnapshot doc in value.documents){
+        doc.reference.delete();
+      }
+    });
+
+
+    return await Firestore.instance.runTransaction((transaction) async {
       await transaction.delete(userCollection.document(uid).collection('budgets').document(budgetId));
     });
   }
 
   Future addToExistingBudget(String budget, double increaseBy) async {
     DocumentSnapshot currentState = await userCollection.document(uid).collection('budgets').document(budget).get();
-    double state = currentState.data['currentState'];
+    double state = currentState.data['increasedBy'];
 
     return await userCollection.document(uid).collection('budgets').document(budget).updateData({
-      'currentState': state + increaseBy
+      'increasedBy': state + increaseBy
     });
   }
 

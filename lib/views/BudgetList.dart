@@ -137,7 +137,7 @@ class _BudgetListState extends State<BudgetList> {
                         ],
                       ),
                       Text(
-                        '${budget.state.toStringAsFixed(2)} PLN',
+                        '${(budget.state + budget.increasedBy).toStringAsFixed(2)} PLN',
                         style: TextStyle(fontSize: 38.0, color: Colors.white),
                       )
                     ],

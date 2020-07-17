@@ -169,7 +169,7 @@ class _BudgetViewState extends State<BudgetView> {
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          '${widget.budget.state.toStringAsFixed(2)} PLN',
+                          '${(widget.budget.state + widget.budget.increasedBy).toStringAsFixed(2)} PLN',
                           style: TextStyle(
                             fontSize: 42.0,
                             color: Colors.white,

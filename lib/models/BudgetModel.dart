@@ -6,6 +6,7 @@ class BudgetModel {
   double state;
   Timestamp creationDate;
   double startingState;
+  double increasedBy;
 
   BudgetModel(Map map){
     documentID = map['documentID'];
@@ -13,5 +14,6 @@ class BudgetModel {
     startingState = map['budget'];
     state = map['currentState'];
     creationDate = map['creationDate'];
+    increasedBy = map['increasedBy'];
   }
 }

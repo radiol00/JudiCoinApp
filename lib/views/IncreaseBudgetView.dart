@@ -65,7 +65,7 @@ class _IncreaseBudgetViewState extends State<IncreaseBudgetView> {
                           await DatabaseService(uid: widget.uid)
                               .addToExistingBudget(widget.budget.documentID,
                                   _moneyController.numberValue);
-                          widget.budget.state += _moneyController.numberValue;
+                          widget.budget.increasedBy += _moneyController.numberValue;
                           widget.gotoSummaryPage();
                         }
                       },
