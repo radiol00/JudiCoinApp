@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:judicoinapp/models/BudgetModel.dart';
-
+import 'package:judicoinapp/helpers/JudiCoinPalette.dart';
 
 class IncreaseBudgetView extends StatefulWidget {
   final BudgetModel budget;
@@ -12,8 +13,47 @@ class IncreaseBudgetView extends StatefulWidget {
 }
 
 class _IncreaseBudgetViewState extends State<IncreaseBudgetView> {
+  double increaseBy = 0.0;
+
+  final _key = GlobalKey<FormState>();
+  final _moneyController = MoneyMaskedTextController(
+      decimalSeparator: ',', thousandSeparator: '.', rightSymbol: ' PLN');
   @override
   Widget build(BuildContext context) {
-    return Container(child: Text('elo'),);
+    return Container(
+      padding: EdgeInsets.fromLTRB(25.0, 10.0, 25.0, 0.0),
+      child: Form(
+        key: _key,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            TextFormField(
+              textAlign: TextAlign.center,
+              expands: false,
+              onChanged: (value) {
+                setState(() {
+                  increaseBy = _moneyController.numberValue;
+                });
+              },
+              validator: (value) {
+                if (increaseBy == 0.0) {
+                  return 'Podaj kwotę!';
+                }
+                return null;
+              },
+              keyboardType: TextInputType.number,
+              controller: _moneyController,
+              decoration: JudiCoinPalette.deco.copyWith(
+                  contentPadding: EdgeInsets.fromLTRB(5.0, 2.0, 5.0, 8.0),
+                  labelText: 'Podaj jaką kwotę dodać',
+                  labelStyle: TextStyle(
+                      letterSpacing: 1.0,
+                      fontSize: 18.0,
+                      color: Colors.black)),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
