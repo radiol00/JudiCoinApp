@@ -7,6 +7,7 @@ import 'package:judicoinapp/services/DatabaseService.dart';
 import 'package:judicoinapp/views/BudgetView.dart';
 import 'package:provider/provider.dart';
 import 'package:judicoinapp/helpers/JudiCoinDateFormatter.dart';
+import 'package:judicoinapp/helpers/JudiCoinCurrencyFormatter.dart';
 
 class BudgetList extends StatefulWidget {
   final String uid;
@@ -59,7 +60,8 @@ class _BudgetListState extends State<BudgetList> {
     return ListView.builder(
       itemCount: budgets.length,
       itemBuilder: (context, i) {
-        BudgetModel budget = BudgetModel({...budgets[i].data, 'documentID': budgets[i].documentID});
+        BudgetModel budget = BudgetModel(
+            {...budgets[i].data, 'documentID': budgets[i].documentID});
         return Container(
           padding: EdgeInsets.only(top: 10.0),
           child: Dismissible(
@@ -102,7 +104,13 @@ class _BudgetListState extends State<BudgetList> {
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => StreamProvider.value(
-                    value: DatabaseService(uid: widget.uid).userCollection.document(widget.uid).collection('budgets').document(budgets[i].documentID).collection('charges').snapshots(),
+                    value: DatabaseService(uid: widget.uid)
+                        .userCollection
+                        .document(widget.uid)
+                        .collection('budgets')
+                        .document(budgets[i].documentID)
+                        .collection('charges')
+                        .snapshots(),
                     child: BudgetView(
                       budget: budget,
                       uid: widget.uid,
@@ -114,18 +122,23 @@ class _BudgetListState extends State<BudgetList> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 5.0, vertical: 15.0),
-                  child: Row(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Column(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text('${budget.name}',
-                              style: TextStyle(
-                                fontSize: 15.0,
-                              )),
+                          SizedBox(
+                            width: 230.0,
+                            child: Wrap(
+                              children: [Text('${budget.name}',
+                                  style: TextStyle(
+                                    fontSize: 15.0,
+                                  ))],
+                            ),
+                          ),
                           SizedBox(
                             height: 10.0,
                           ),
@@ -137,7 +150,8 @@ class _BudgetListState extends State<BudgetList> {
                         ],
                       ),
                       Text(
-                        '${budget.state.toStringAsFixed(2)} PLN',
+//                        '${(budget.state + budget.increasedBy).toStringAsFixed(2)} PLN',
+                      formatCurrency(budget.state + budget.increasedBy),
                         style: TextStyle(fontSize: 38.0, color: Colors.white),
                       )
                     ],

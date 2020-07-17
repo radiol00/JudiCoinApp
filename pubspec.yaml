@@ -32,6 +32,7 @@ dependencies:
   flutter_speed_dial: ^1.2.5
   collection: 1.14.12
   pie_chart: ^3.1.1
+  flutter_money_formatter: ^0.8.3
 
 
   # The following adds the Cupertino Icons font to your application.
