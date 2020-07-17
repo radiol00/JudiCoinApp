@@ -38,7 +38,8 @@ class _BudgetSummaryState extends State<BudgetSummary> {
   }
 
   void scrollToMe(BuildContext context) {
-    Scrollable.ensureVisible(context, curve: Curves.easeInOut, duration: Duration(milliseconds: 200));
+    Scrollable.ensureVisible(context,
+        curve: Curves.easeInOut, duration: Duration(milliseconds: 200));
   }
 
   @override
@@ -47,6 +48,7 @@ class _BudgetSummaryState extends State<BudgetSummary> {
     Map<dynamic, List<ChargeModel>> groupedCharges;
     List<ChargeModel> chargeModels;
     List<ChargeModel> chargesList = List<ChargeModel>();
+    double chargeSum = 0.0;
     if (charges != null) {
       chargeModels = charges.documents.map((e) => ChargeModel(e.data)).toList();
       groupedCharges = groupBy(chargeModels, (obj) => obj.category);
@@ -57,6 +59,9 @@ class _BudgetSummaryState extends State<BudgetSummary> {
             'value': value.charge + element.charge
           });
         }));
+      });
+      chargeModels.forEach((element) {
+        chargeSum += element.charge;
       });
     }
 
@@ -108,7 +113,7 @@ class _BudgetSummaryState extends State<BudgetSummary> {
                     children: <Widget>[
                       Text('Wydano'),
                       Text(
-                          '${(widget.budget.startingState - widget.budget.state).toStringAsFixed(2)} PLN',
+                          '${chargeSum.toStringAsFixed(2)} PLN',
                           style: TextStyle(fontSize: 21.0)),
                     ],
                   )

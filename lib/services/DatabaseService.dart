@@ -6,11 +6,6 @@ class DatabaseService{
   CollectionReference budgetsCollection;
   final String uid;
   DatabaseService({this.uid});
-  Future updateUserData(int budgetCount) async {
-    return await userCollection.document(uid).setData({
-      'budgetCount': 0
-    });
-  }
 
   Future addNewBudget(String name, double budget) async {
     userCollection.document(uid).collection('budgets').orderBy('budget', descending: true);
@@ -40,6 +35,15 @@ class DatabaseService{
   Future deleteBudget(String budgetId) async{
     await Firestore.instance.runTransaction((transaction) async {
       await transaction.delete(userCollection.document(uid).collection('budgets').document(budgetId));
+    });
+  }
+
+  Future addToExistingBudget(String budget, double increaseBy) async {
+    DocumentSnapshot currentState = await userCollection.document(uid).collection('budgets').document(budget).get();
+    double state = currentState.data['currentState'];
+
+    return await userCollection.document(uid).collection('budgets').document(budget).updateData({
+      'currentState': state + increaseBy
     });
   }
 
