@@ -8,7 +8,6 @@ class JudiCoinPalette {
   static Color dark = Color.fromRGBO(45, 45, 52, 1);
   static Color selection = Color.fromRGBO(200, 72, 169, 1);
   static Color lightSelection = Color.fromRGBO(255, 137, 224, 1);
-  static Color lightSelection2 = Color.fromRGBO(255, 137, 224, 1);
 
   static InputDecoration deco = InputDecoration(
     filled: true,
