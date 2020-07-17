@@ -8,6 +8,7 @@ import 'package:judicoinapp/views/BudgetSummary.dart';
 import 'package:judicoinapp/views/IncreaseBudgetView.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
+import 'package:judicoinapp/helpers/JudiCoinCurrencyFormatter.dart';
 
 class BudgetView extends StatefulWidget {
   final BudgetModel budget;
@@ -57,10 +58,8 @@ class _BudgetViewState extends State<BudgetView> {
   @override
   Widget build(BuildContext context) {
     QuerySnapshot charges = Provider.of<QuerySnapshot>(context);
-    if (charges != null){
-      setState(() {
-
-      });
+    if (charges != null) {
+      setState(() {});
     }
 
     return IgnorePointer(
@@ -177,7 +176,8 @@ class _BudgetViewState extends State<BudgetView> {
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          '${(widget.budget.state + widget.budget.increasedBy).toStringAsFixed(2)} PLN',
+                          formatCurrency(
+                              widget.budget.state + widget.budget.increasedBy),
                           style: TextStyle(
                             fontSize: 42.0,
                             color: Colors.white,

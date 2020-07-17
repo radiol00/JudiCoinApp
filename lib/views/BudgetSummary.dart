@@ -7,6 +7,7 @@ import 'package:judicoinapp/views/ChargeListPosition.dart';
 import 'package:provider/provider.dart';
 import 'package:collection/collection.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:judicoinapp/helpers/JudiCoinCurrencyFormatter.dart';
 
 class BudgetSummary extends StatefulWidget {
   final String uid;
@@ -103,9 +104,10 @@ class _BudgetSummaryState extends State<BudgetSummary> {
               ),
               Text('Kwota początkowa'),
               Text(
-                  '${widget.budget.startingState.toStringAsFixed(2)}' +
+                  formatCurrencyNonSymbol(widget.budget.startingState) +
                       (widget.budget.increasedBy != 0.0
-                          ? ' + ${widget.budget.increasedBy.toStringAsFixed(2)}'
+                          ? ' + ' +
+                              formatCurrencyNonSymbol(widget.budget.increasedBy)
                           : '') +
                       ' PLN',
                   style: TextStyle(fontSize: 21.0)),
@@ -113,7 +115,7 @@ class _BudgetSummaryState extends State<BudgetSummary> {
                 height: 10.0,
               ),
               Text('Wydano'),
-              Text('${chargeSum.toStringAsFixed(2)} PLN',
+              Text(formatCurrency(chargeSum),
                   style: TextStyle(fontSize: 21.0)),
               ...(chargesList.length > 0
                   ? [chargesPieChart]
