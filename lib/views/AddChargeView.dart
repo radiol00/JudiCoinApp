@@ -56,9 +56,12 @@ class _AddChargeViewState extends State<AddChargeView>
     super.initState();
   }
 
+  final focusNode = FocusNode();
+
   @override
   void dispose() {
     // TODO: implement dispose
+    focusNode.dispose();
     _moneyController.dispose();
     _animationController.dispose();
     super.dispose();
@@ -76,6 +79,29 @@ class _AddChargeViewState extends State<AddChargeView>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 TextFormField(
+                  focusNode: focusNode,
+                  onFieldSubmitted: disableButton
+                      ? null
+                      : (value) async {
+                          if (_key.currentState.validate() &&
+                              pickedCategoryIndex != -1) {
+                            setState(() {
+                              disableButton = true;
+                            });
+                            await DatabaseService(uid: widget.uid).addNewCharge(
+                                widget.budget.documentID,
+                                _moneyController.numberValue,
+                                categories[pickedCategoryIndex]['category']);
+                            widget.budget.state -= _moneyController.numberValue;
+                            widget.gotoSummaryPage();
+                          } else if (pickedCategoryIndex == -1) {
+                            FocusScope.of(context).requestFocus(focusNode);
+                            await _animationController.forward();
+                            _animationController.reset();
+                          } else {
+                            FocusScope.of(context).requestFocus(focusNode);
+                          }
+                        },
                   textAlign: TextAlign.center,
                   expands: false,
                   onChanged: (value) {
@@ -153,22 +179,25 @@ class _AddChargeViewState extends State<AddChargeView>
         FlatButton(
             color: JudiCoinPalette.primary,
             disabledColor: JudiCoinPalette.primary,
-            onPressed: disableButton ? null : () async {
-              if (_key.currentState.validate() && pickedCategoryIndex != -1) {
-                setState(() {
-                  disableButton = true;
-                });
-                await DatabaseService(uid: widget.uid).addNewCharge(
-                    widget.budget.documentID,
-                    _moneyController.numberValue,
-                    categories[pickedCategoryIndex]['category']);
-                widget.budget.state -= _moneyController.numberValue;
-                widget.gotoSummaryPage();
-              } else if (pickedCategoryIndex == -1) {
-                await _animationController.forward();
-                _animationController.reset();
-              }
-            },
+            onPressed: disableButton
+                ? null
+                : () async {
+                    if (_key.currentState.validate() &&
+                        pickedCategoryIndex != -1) {
+                      setState(() {
+                        disableButton = true;
+                      });
+                      await DatabaseService(uid: widget.uid).addNewCharge(
+                          widget.budget.documentID,
+                          _moneyController.numberValue,
+                          categories[pickedCategoryIndex]['category']);
+                      widget.budget.state -= _moneyController.numberValue;
+                      widget.gotoSummaryPage();
+                    } else if (pickedCategoryIndex == -1) {
+                      await _animationController.forward();
+                      _animationController.reset();
+                    }
+                  },
             child: Text(
               'Obciąż',
               style: TextStyle(color: Colors.white),

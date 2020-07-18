@@ -12,6 +12,15 @@ class _AddBudgetViewState extends State<AddBudgetView> {
   final controller = MoneyMaskedTextController(
       decimalSeparator: ',', thousandSeparator: '.', rightSymbol: ' PLN');
 
+  final focusNode = FocusNode();
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+    controller.dispose();
+    super.dispose();
+  }
+
   String name;
   double budget;
 
@@ -44,6 +53,9 @@ class _AddBudgetViewState extends State<AddBudgetView> {
                         height: 10.0,
                       ),
                       TextFormField(
+                        onFieldSubmitted: (value) {
+                          FocusScope.of(context).requestFocus(focusNode);
+                        },
                         validator: (val) {
                           val = val.trim();
                           if (val.isEmpty) {
@@ -76,6 +88,15 @@ class _AddBudgetViewState extends State<AddBudgetView> {
                         height: 10.0,
                       ),
                       TextFormField(
+                        onFieldSubmitted: (value) {
+                          if (_formKey.currentState.validate()) {
+                            Navigator.of(context)
+                                .pop({'name': name, 'budget': budget});
+                          } else {
+                            FocusScope.of(context).requestFocus(focusNode);
+                          }
+                        },
+                        focusNode: focusNode,
                         onChanged: (value) {
                           setState(() {
                             budget = controller.numberValue;
